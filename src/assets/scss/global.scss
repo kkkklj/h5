@@ -1,0 +1,55 @@
+// 命名规定: 全局变量都要用g开头!
+
+// 全局变量
+$gColor:#333; //字体颜色
+$gBlue: #1989fa;
+$gBlack: #000;
+$gRed: #e62828;
+$gRed2: #F44;
+$gThemeColor: #b91919;
+$gGreen:#44B549;
+$gBorder: 1px solid #F0F0F0;
+$gGray: #ccc;
+
+$gBoxShadow: 0 0 2px rgba(0,0,0,0.2);
+$gBoxShadow2:0 2px 2px 0px rgba(0, 0, 0, 0.1);
+
+// @include gSetLine(3), 用驼峰式命名
+@mixin gSetLine($line: 1, $lh: 1.5){
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: $line;
+  -webkit-box-orient: vertical;
+  line-height: $lh;
+  word-break: break-word;
+}
+
+@mixin gPlaceholder($size: 1rem){
+  display: block;
+  background: url("~@/views/images/common/placeholder.png") no-repeat center center;
+  background-size: $size;
+  background-color: #F0F0F0;
+  object-fit: cover;
+  &[src^='http']{
+    background-image: none;
+  }
+}
+
+@mixin gSetBg($url,$size:100%) {
+  display: block;
+  background: url($url) no-repeat center center;
+  background-size: $size;
+}
+
+
+@mixin gSetLinearBg($opacity:0.5,$color1:#000, $color2:transparent) {
+  background:linear-gradient(to top, rgba($color1,$opacity), $color2);
+}
+
+@mixin gSetLinearBg2($opacity:0.5,$color1:#000, $color2:transparent) {
+  background:linear-gradient(to bottom, rgba($color1,$opacity), $color2);
+}
+@mixin gSetLinearBg3($color1:#000, $color2:transparent) {
+  background:linear-gradient(to right, $color1, $color2);
+}
