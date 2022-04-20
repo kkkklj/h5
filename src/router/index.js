@@ -4,11 +4,18 @@ import {
 } from 'vue-router'
 
 import Home from '../views/home/index.vue'
+import schemeDetail from "../views/schemeDetail.vue"
 
 const routes = [
   {
     path: '/',
+    name:'home',
     component:Home
+  },
+  {
+    path: '/schemeDetail',
+    name:'schemeDetail',
+    component:schemeDetail
   },
 ]
 const router = createRouter({

@@ -1,6 +1,14 @@
 <script setup>
 import { reactive } from 'vue'
+import {useRouter} from 'vue-router'
 const tags = reactive(['同户型', '海量方案', '团购优惠'])
+const router = useRouter();
+const toDetail = () => {
+  router.push({
+    name: 'schemeDetail',
+    query: { id: 1 }
+  })
+}
 </script>
 <template>
   <div class="home-header">
@@ -14,7 +22,7 @@ const tags = reactive(['同户型', '海量方案', '团购优惠'])
 
   </div>
   <div class="list-wrap">
-    <div class="card">
+    <div class="card" @click="toDetail">
       <div class="img-wrap">
         <van-image class="img" width="100%" height="4.47rem" src="https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
         <div class="img-cover">
@@ -28,9 +36,13 @@ const tags = reactive(['同户型', '海量方案', '团购优惠'])
       <div class="card-desc">
         <div class="desc-lef">索菲亚全屋定制</div>
         <div class="desc-rig">
-          <img src="../images/home/money.png" alt="">
-          <span>8.42</span>
-          <span class="sp-2">万</span>
+          <div class="sheng">预计省
+            <span>2.5</span>
+            万
+          </div>
+          <div class="get-discount">
+            获取折扣
+          </div>
         </div>
       </div>
     </div>
@@ -50,6 +62,7 @@ $aColor:red;
     @include gSetBg('../images/home/title.png');
     margin: 1.3rem auto .26rem;
   }
+
   .header-desc {
     text-align: center;
     font-size: 0.3rem;
@@ -87,9 +100,11 @@ $aColor:red;
     border-radius: .2rem;
     overflow: hidden;
     background: #fff;
-    .img-wrap{
+
+    .img-wrap {
       position: relative;
-      .img-cover{
+
+      .img-cover {
         position: absolute;
         top: 0.2rem;
         left: 0;
@@ -97,13 +112,15 @@ $aColor:red;
         padding: 0 0.2rem;
         display: flex;
         justify-content: space-between;
-        .card-tags{
+
+        .card-tags {
           display: flex;
           align-items: center;
-          div{
+
+          div {
             padding: .04rem .12rem .03rem;
             border-radius: .04rem;
-            background: rgba(0,0,0,0.20);
+            background: rgba(0, 0, 0, 0.20);
             color: #fff;
             font-size: .24rem;
             margin-right: .08rem;
@@ -111,19 +128,21 @@ $aColor:red;
             height: auto;
           }
         }
-        .vr-btn{
+
+        .vr-btn {
           width: .6rem;
           height: .6rem;
-          background: rgba(0,0,0,0.20);
+          background: rgba(0, 0, 0, 0.20);
           border-radius: 50%;
           position: relative;
-          &::before{
+
+          &::before {
             content: '';
             display: block;
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%,-50%);
+            transform: translate(-50%, -50%);
             width: .4rem;
             height: .4rem;
             @include gSetBg('../images/home/icon-1.png');
@@ -131,6 +150,7 @@ $aColor:red;
         }
       }
     }
+
     .img {
       display: block;
     }
@@ -139,8 +159,8 @@ $aColor:red;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: .38rem .24rem .37rem .2rem;
-      font-size: .32rem;
+      padding: .38rem 0rem .37rem .2rem;
+      font-size: .34rem;
       color: #000000;
 
       .desc-lef {
@@ -151,12 +171,35 @@ $aColor:red;
         display: flex;
         align-items: center;
         line-height: .4rem;
+
+        .sheng {
+          font-size: .24rem;
+          color: #555555;
+
+          span {
+            color: #FF6C23;
+          }
+        }
+
+        .get-discount {
+          width: 1.84rem;
+          height: .72rem;
+          background: #1FAB89;
+          margin-left: .2rem;
+          border-radius: .4rem 0 0 .4rem;
+          line-height: .72rem;
+          text-align: center;
+          font-size: .28rem;
+          color: #fff;
+        }
+
         img {
           width: .24rem;
           height: .24rem;
           margin-right: .02rem;
           display: block;
         }
+
         span {
           font-weight: bold;
           font-size: .34rem;

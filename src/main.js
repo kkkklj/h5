@@ -1,11 +1,15 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from '../src/router/index'
-import { Lazyload,Image as VanImag } from 'vant';
+import { Lazyload, Image as VanImag, Swipe, SwipeItem,Popup,ConfigProvider } from 'vant';
 const app = createApp(App);
 [
   Lazyload,
-  VanImag
+  VanImag,
+  Swipe,
+  SwipeItem,
+  Popup,
+  ConfigProvider
 ].map(item => {
   app.use(item)
 })
