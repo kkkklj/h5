@@ -1,24 +1,54 @@
 <script setup>
 import GetDsicount from '../components/getDiscount.vue'
-import { reactive, onBeforeMount } from 'vue';
+import { reactive, onBeforeMount,onBeforeUnmount } from 'vue';
+import { useRouter, useRoute } from 'vue-router'
+import { $http, $API } from '../utils/index';
+
+const router = useRouter(),
+  route = useRoute(),
+  { query } = route;
 const imgList = reactive([
-  "https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg",
-  "https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg",
-  "https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg",
-  "https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg",
   "https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg",
 ])
 onBeforeMount(() => {
   document
     .querySelector('body')
-    .setAttribute('style', 'background-color:#fff')
+    .setAttribute('style', 'background-color:#fff');
+  getData();
+})
+
+onBeforeUnmount(() => {
+  document
+    .querySelector('body')
+    .setAttribute('style', '');
+})
+
+const swiper = reactive([]),
+      headerData = reactive({}),
+      mainList = reactive([]),
+      pastList = reactive([]);
+const getData = () => $http({
+  url: `${$API}favorite-home-customer/show-scheme/${query.id || 1}`,
+  httpFilter: true
+}).then(data => {
+  ['salePropertyName','styleName','squareNum','wardrobeSquareNum','saveMoneyAmount'].map(k => {
+    headerData[k] = data[k]
+  })
+  swiper.splice(0,0,...data.coverImages);
+  mainList.splice(0,0,...data.renderingImages);
+  pastList.splice(0,0,...data.caseDiagrams);
 })
 </script>
 <template>
   <div class="swipe-wrap">
+    <div class="to-vr">
+      <img src="./images/home/icon-1.png" alt="">
+      三维全景
+    </div>
     <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white" :show-indicators="false">
-      <van-swipe-item v-for="(item,index) in imgList" :key="index">
-         <van-image class="img" width="100%" fit="cover" height="7.5rem" src="https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
+      <van-swipe-item v-for="(item, index) in imgList" :key="index">
+        <van-image class="img" width="100%" fit="cover" height="7.5rem"
+          src="https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
       </van-swipe-item>
     </van-swipe>
   </div>
@@ -26,7 +56,7 @@ onBeforeMount(() => {
     <div class="tit">
       <div class="tit-lef">欧派</div>
       <div class="tit-rig">预计省
-        <span>2.5</span>
+        <span>{{headerData.saveMoneyAmount}}</span>
         万
       </div>
     </div>
@@ -34,41 +64,73 @@ onBeforeMount(() => {
       <div class="about-col">
         <div class="about-item">
           楼盘
-          <span>中冶逸璟台</span>
+          <span>{{headerData.salePropertyName}}</span>
         </div>
         <div class="about-item">
-          楼盘
-          <span>中冶逸璟台</span>
+          风格
+          <span>{{headerData.styleName}}</span>
         </div>
       </div>
       <div class="about-col">
         <div class="about-item">
-          楼盘
-          <span>中冶逸璟台</span>
+          面积
+          <span>{{headerData.squareNum}}</span>
         </div>
         <div class="about-item">
-          楼盘
-          <span>中冶逸璟台</span>
+          衣柜
+          <span>{{headerData.wardrobeSquareNum}}</span>
         </div>
       </div>
     </div>
   </div>
   <div class="show-list">
     <div class="list-tit">效果展示</div>
-    <van-image v-for="(item, index) in imgList" lazy-load :key="index" class="img" width="100%" height="5rem" :src="item">
+    <van-image v-for="(item, index) in mainList" lazy-load :key="index" class="img" width="100%" height="5rem"
+      :src="item.imageUrl">
     </van-image>
   </div>
-  <div class="past-wrap">
+  <div class="past-wrap" v-if="pastList.length">
     <div class="tit">过往案例</div>
     <div class="list-wrap">
-      <van-image v-for="(item, index) in imgList" fit="cover" :key="index" class="img" width="3.25rem" height="3.25rem" :src="item">
+      <van-image v-for="(item, index) in pastList" fit="cover" :key="index" class="img" width="3.25rem" height="3.25rem"
+        :src="item.imageUrl">
       </van-image>
     </div>
   </div>
   <GetDsicount></GetDsicount>
 </template>
 <style lang="scss" scoped>
-.swipe-wrap {}
+.swipe-wrap {
+  position: relative;
+  height: 7.5rem;
+  .to-vr {
+    position: absolute;
+    bottom: .3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2.4rem;
+    height: .8rem;
+    background: rgba(34, 34, 34, 0.60);
+    border-radius: .4rem;
+    // filter: blur(.3rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .26rem;
+    color: #FFFFFF;
+    font-weight: bold;
+    z-index: 100;
+    img{
+      width: .4rem;
+      height: .4rem;
+      margin-right: .16rem;
+      
+    }
+    .img{
+      display: block;
+    }
+  }
+}
 
 .header-wrap {
   padding: .58rem .4rem .4rem;
@@ -114,9 +176,11 @@ onBeforeMount(() => {
       line-height: .37rem;
       color: #1FAB89;
       margin-bottom: .22rem;
-      &:nth-last-child(1){
+
+      &:nth-last-child(1) {
         margin-bottom: 0;
       }
+
       span {
         color: #222;
         margin-left: .24rem;

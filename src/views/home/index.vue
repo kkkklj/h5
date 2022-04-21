@@ -1,14 +1,34 @@
 <script setup>
-import { reactive } from 'vue'
-import {useRouter} from 'vue-router'
+import { reactive,onBeforeMount } from 'vue'
+import {useRouter,useRoute} from 'vue-router'
+import {$http,$API} from '../../utils/index'
 const tags = reactive(['同户型', '海量方案', '团购优惠'])
-const router = useRouter();
-const toDetail = () => {
+const router = useRouter(),
+      route = useRoute(),
+      {query} = route;
+
+onBeforeMount(() => {
+  getList();
+})
+
+const toDetail = (id) => {
   router.push({
     name: 'schemeDetail',
-    query: { id: 1 }
+    query: { id }
   })
 }
+const cardList = reactive([])
+const getList = () => {
+  return $http({
+    url:`${$API}favorite-home-customer/show-project/${query.id||1}`,
+    httpFilter:true
+  }).then(data => {
+    console.log(data)
+    cardList.splice(0,0,...data.showSchemes);
+    console.log(cardList)
+  })
+}
+
 </script>
 <template>
   <div class="home-header">
@@ -22,22 +42,21 @@ const toDetail = () => {
 
   </div>
   <div class="list-wrap">
-    <div class="card" @click="toDetail">
+    <div class="card" @click="toDetail(item.showSchemeId)" v-for="(item,index) in cardList" :key="index">
       <div class="img-wrap">
-        <van-image class="img" width="100%" height="4.47rem" src="https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
+        <van-image class="img" width="100%" height="4.47rem" fit="cover" :src="item.cover" />
         <div class="img-cover">
           <div class="card-tags">
-            <div>现代</div>
-            <div>120m²</div>
+            <div v-for="(tag,i) in item.tagsArr" :key="i">{{tag}}</div>
           </div>
           <div class="vr-btn"></div>
         </div>
       </div>
       <div class="card-desc">
-        <div class="desc-lef">索菲亚全屋定制</div>
+        <div class="desc-lef">{{item.styleName}}</div>
         <div class="desc-rig">
           <div class="sheng">预计省
-            <span>2.5</span>
+            <span>{{item.saveMoneyAmount}}</span>
             万
           </div>
           <div class="get-discount">
@@ -46,6 +65,7 @@ const toDetail = () => {
         </div>
       </div>
     </div>
+    <img src="../images/home/card.png" class="bottom-card"/>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -213,6 +233,11 @@ $aColor:red;
         }
       }
     }
+  }
+  .bottom-card{
+    width:6.7rem;
+    height:3.2rem;
+    margin-top:.3rem;
   }
 }
 </style>
