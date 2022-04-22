@@ -1,15 +1,13 @@
 <script setup>
 import GetDsicount from '../components/getDiscount.vue'
-import { reactive, onBeforeMount,onBeforeUnmount } from 'vue';
+import { reactive, onBeforeMount,onBeforeUnmount,ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router'
 import { $http, $API } from '../utils/index';
+import imgPlaceholder from '../static/images/placeholder.jpg'
 
 const router = useRouter(),
   route = useRoute(),
   { query } = route;
-const imgList = reactive([
-  "https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg",
-])
 onBeforeMount(() => {
   document
     .querySelector('body')
@@ -27,6 +25,7 @@ const swiper = reactive([]),
       headerData = reactive({}),
       mainList = reactive([]),
       pastList = reactive([]);
+const vrUrl = ref('')
 const getData = () => $http({
   url: `${$API}favorite-home-customer/show-scheme/${query.id || 1}`,
   httpFilter: true
@@ -34,21 +33,30 @@ const getData = () => $http({
   ['salePropertyName','styleName','squareNum','wardrobeSquareNum','saveMoneyAmount'].map(k => {
     headerData[k] = data[k]
   })
-  swiper.splice(0,0,...data.coverImages);
   mainList.splice(0,0,...data.renderingImages);
   pastList.splice(0,0,...data.caseDiagrams);
+  const coverImgs = data.coverImages.map(i => i.imageUrl)
+  swiper.splice(0,0,...coverImgs);
+  if(swiper.length === 0) {
+    swiper.push(imgPlaceholder);
+  }
+  vrUrl.value = data.vrUrl;
 })
+
+const toVr = () => {
+  location.href = vrUrl.value
+}
 </script>
 <template>
   <div class="swipe-wrap">
-    <div class="to-vr">
+    <div class="to-vr" @click="toVr">
       <img src="./images/home/icon-1.png" alt="">
       三维全景
     </div>
     <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white" :show-indicators="false">
-      <van-swipe-item v-for="(item, index) in imgList" :key="index">
+      <van-swipe-item v-for="(item, index) in swiper" :key="index">
         <van-image class="img" width="100%" fit="cover" height="7.5rem"
-          src="https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
+          :src="item" />
       </van-swipe-item>
     </van-swipe>
   </div>
