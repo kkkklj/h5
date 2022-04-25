@@ -3,7 +3,8 @@ import GetDsicount from '../components/getDiscount.vue'
 import { reactive, onBeforeMount,onBeforeUnmount,ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router'
 import { $http, $API } from '../utils/index';
-import imgPlaceholder from '../static/images/placeholder.jpg'
+import imgPlaceholder from '../static/images/placeholder.jpg';
+import { ImagePreview } from 'vant';
 
 const router = useRouter(),
   route = useRoute(),
@@ -21,11 +22,19 @@ onBeforeUnmount(() => {
     .setAttribute('style', '');
 })
 
+const preview = (images,startPosition = 0) => {
+  ImagePreview({
+    images,
+    startPosition
+  })
+}
+
+
 const swiper = reactive([]),
       headerData = reactive({}),
       mainList = reactive([]),
       pastList = reactive([]);
-const vrUrl = ref('')
+const vrUrl = ref('');
 const getData = () => $http({
   url: `${$API}favorite-home-customer/show-scheme/${query.id || 1}`,
   httpFilter: true
@@ -44,7 +53,7 @@ const getData = () => $http({
 })
 
 const toVr = () => {
-  location.href = vrUrl.value
+  location.href = vrUrl.value;
 }
 </script>
 <template>
@@ -54,7 +63,7 @@ const toVr = () => {
       三维全景
     </div>
     <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white" :show-indicators="false">
-      <van-swipe-item v-for="(item, index) in swiper" :key="index">
+      <van-swipe-item v-for="(item, index) in swiper" :key="index" @click="preview(swiper,index)">
         <van-image class="img" width="100%" fit="cover" height="7.5rem"
           :src="item" />
       </van-swipe-item>
@@ -82,11 +91,11 @@ const toVr = () => {
       <div class="about-col">
         <div class="about-item">
           面积
-          <span>{{headerData.squareNum}}</span>
+          <span>{{headerData.squareNum}}m²</span>
         </div>
         <div class="about-item">
           衣柜
-          <span>{{headerData.wardrobeSquareNum}}</span>
+          <span>{{headerData.wardrobeSquareNum}}m²</span>
         </div>
       </div>
     </div>
@@ -94,14 +103,14 @@ const toVr = () => {
   <div class="show-list">
     <div class="list-tit">效果展示</div>
     <van-image v-for="(item, index) in mainList" lazy-load :key="index" class="img" width="100%" height="5rem"
-      :src="item.imageUrl">
+      :src="item.imageUrl" @click="preview(mainList.map(i => i.imageUrl),index)">
     </van-image>
   </div>
   <div class="past-wrap" v-if="pastList.length">
     <div class="tit">过往案例</div>
     <div class="list-wrap">
       <van-image v-for="(item, index) in pastList" fit="cover" :key="index" class="img" width="3.25rem" height="3.25rem"
-        :src="item.imageUrl">
+        :src="item.imageUrl" @click="preview(pastList.map(i => i.imageUrl),index)">
       </van-image>
     </div>
   </div>
