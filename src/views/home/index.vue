@@ -1,7 +1,15 @@
 <script setup>
-import { reactive,onBeforeMount } from 'vue'
+import { reactive,onBeforeMount,ref } from 'vue'
 import {useRouter,useRoute} from 'vue-router'
-import {$http,$API} from '../../utils/index'
+import {$http,$API} from '../../utils/index';
+import wxPop from '../../components/wxPop.vue';
+const showPopup = () => {
+  const {showPopup} = wxPopRef.value;
+  showPopup()
+};
+
+
+const wxPopRef = ref(null);
 const tags = reactive(['同户型', '海量方案', '团购优惠'])
 const router = useRouter(),
       route = useRoute(),
@@ -29,8 +37,11 @@ const getList = () => {
   })
 }
 
+const toVr = (url) => location.href = url;
+
 </script>
 <template>
+  <wx-pop ref="wxPopRef"></wx-pop>
   <div class="home-header">
     <div class="header-name"></div>
     <div class="header-desc">找心怡的家装方案</div>
@@ -49,17 +60,17 @@ const getList = () => {
           <div class="card-tags">
             <div v-for="(tag,i) in item.tagsArr" :key="i">{{tag}}</div>
           </div>
-          <div class="vr-btn"></div>
+          <div class="vr-btn" @click.stop="toVr(item.vrUrl)" v-if="item.vrUrl"></div>
         </div>
       </div>
       <div class="card-desc">
-        <div class="desc-lef">{{item.styleName}}</div>
+        <div class="desc-lef">{{item.brandName}}</div>
         <div class="desc-rig">
           <div class="sheng">预计省
             <span>{{item.saveMoneyAmount}}</span>
             万
           </div>
-          <div class="get-discount">
+          <div class="get-discount" @click.stop="showPopup">
             获取折扣
           </div>
         </div>
@@ -120,7 +131,7 @@ $aColor:red;
     border-radius: .2rem;
     overflow: hidden;
     background: #fff;
-
+    margin-top: .3rem;
     .img-wrap {
       position: relative;
 

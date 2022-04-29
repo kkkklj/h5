@@ -30,7 +30,7 @@ const getData = () => $http({
   url: `${$API}favorite-home-customer/show-scheme/${query.id || 1}`,
   httpFilter: true
 }).then(data => {
-  ['salePropertyName','styleName','squareNum','wardrobeSquareNum','saveMoneyAmount'].map(k => {
+  ['brandName','salePropertyName','styleName','squareNum','wardrobeSquareNum','saveMoneyAmount'].map(k => {
     headerData[k] = data[k]
   })
   mainList.splice(0,0,...data.renderingImages);
@@ -49,7 +49,7 @@ const toVr = () => {
 </script>
 <template>
   <div class="swipe-wrap">
-    <div class="to-vr" @click="toVr">
+    <div class="to-vr" @click="toVr" v-if="vrUrl">
       <img src="./images/home/icon-1.png" alt="">
       三维全景
     </div>
@@ -62,7 +62,7 @@ const toVr = () => {
   </div>
   <div class="header-wrap">
     <div class="tit">
-      <div class="tit-lef">欧派</div>
+      <div class="tit-lef">{{headerData.brandName}}</div>
       <div class="tit-rig">预计省
         <span>{{headerData.saveMoneyAmount}}</span>
         万
