@@ -1,19 +1,23 @@
 <script setup>
-import { ref } from 'vue';
-import wxPop from './wxPop.vue';
+import wxPop from "./wxPop.vue";
+import { ref, onMounted } from "vue";
 const wxPopRef = ref(null);
-const showPopup = () => {
-  const {showPopup} = wxPopRef.value;
-  showPopup()
-};
 
+
+const showPopup = () => {
+  const { showPopup } = wxPopRef.value;
+  showPopup();
+};
 </script>
 <template>
-  
   <wx-pop ref="wxPopRef"></wx-pop>
   <div class="compo-discount-wrap">
     <div class="discount-box">
-      <img class="discount-icon" src="../static/images/discount/discount.png" alt="">
+      <img
+        class="discount-icon"
+        src="../static/images/discount/discount.png"
+        alt=""
+      />
       <span>心怡家-专属渠道折扣</span>
       <div class="discount-btn" @click="showPopup">获取折扣</div>
     </div>
@@ -21,8 +25,6 @@ const showPopup = () => {
 </template>
 <style lang="scss" scoped>
 // $--van-popup-background-color:transparent;
-
-
 
 
 
@@ -68,4 +70,5 @@ const showPopup = () => {
     }
   }
 }
+
 </style>

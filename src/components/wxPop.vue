@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+
 const themeVars = {
   popupBackgroundColor: "transparent",
 };
@@ -8,6 +9,11 @@ const showPopup = () => {
   console.log(11)
   show.value = true;
 };
+
+
+const qrCodeUrl = ref(
+  "//124.221.136.33:9000/fhome/2022/04/23/1650675829645.jpg"
+);
 defineExpose({
   showPopup
 })
@@ -21,12 +27,12 @@ defineExpose({
           width="1.5rem"
           height="1.5rem"
           round
-          src="https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg"
+          src="//124.221.136.33:9000/fhome/2022/04/23/1650679677402.jpg"
         />
         <div class="wx-name">团购福利酱</div>
         <div class="qr-code">
           <img
-            src="https://cdn.jsdelivr.net/npm/@vant/assets/cat.jpeg"
+            :src="qrCodeUrl"
             alt=""
           />
           <div class="code-desc">长按识别二维码，找我领折扣优惠</div>
